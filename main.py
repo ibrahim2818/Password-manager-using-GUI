@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import pandas as pd
 import random
+import pyperclip 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
     num= [str(i) for i in range(0,9)]
@@ -14,7 +15,7 @@ def generate_password():
     #     random.choice(symbols),
     #     random.choice(wordc)
     # ]*2
-    password
+    password= []
     nNum=[random.choice(num) for item in range(2)]
     nword= [random.choice(word) for item in range(2)]
     nwordc= [random.choice(wordc) for item in range(2)]
@@ -26,6 +27,7 @@ def generate_password():
     
     password_entry.delete(0, END)
     password_entry.insert(0, password)
+    pyperclip.copy(password)
 
     
 

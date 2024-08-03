@@ -51,14 +51,15 @@ def save():
             with open("data.txt", mode="a") as file:
                 file.write(f"{website} | {email} | {password}\n")
 
-            # Add the new data to the DataFrame
-            new_df = pd.DataFrame(new_data)
-            
+            new_df=pd.DataFrame(new_data)
             try:
                 existing_df = pd.read_csv("data.csv")
                 updated_df = pd.concat([existing_df, new_df], ignore_index=True)
             except FileNotFoundError:
                 updated_df = new_df
+            except pd.errors.EmptyDataError:
+
+                updated_df = pd.DataFrame(new_data)
 
             updated_df.to_csv("data.csv", index=False)
             
@@ -66,10 +67,20 @@ def save():
             website_entry.delete(0, END)
             password_entry.delete(0, END)
 
-
-        
-
-
+# ---------------------------- SEARCH ------------------------------- #
+def search():
+    website = website_entry.get()
+    try:
+        file = pd.read_csv("data.csv")
+        if website in file["website"].values:
+            entry = file[file["website"] == website].iloc[0]
+            email = entry['email']
+            password = entry['password']
+            messagebox.showinfo("Info", f"Email: {email}\nPassword: {password}")
+        else:
+            messagebox.showinfo("Not found", "No details for the website exist.")
+    except :
+        messagebox.showinfo("Error", "No data file found.")
 
 # ---------------------------- UI SETUP ------------------------------- #
 window= Tk()
@@ -86,8 +97,11 @@ website_label = Label(text="Website:")
 website_label.grid(row=1, column=0)
 
 website_entry = Entry(width=35)
-website_entry.grid(row=1, column=1, sticky="EW",columnspan=2, pady=5)
+website_entry.grid(row=1, column=1, sticky="EW", pady=5)
 website_entry.focus()
+
+search_Button= Button(text="search",width=10, command= search)
+search_Button.grid(row=1,column=2)
 
 email_label = Label(text="Email/Username:")
 email_label.grid(row=2, column=0)
